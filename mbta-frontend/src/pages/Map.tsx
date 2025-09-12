@@ -22,8 +22,15 @@ export function MapPage() {
         <HeadwayBadge headways={headways} />
       </div>
       <RouteLegend />
-      <MapContainer center={INITIAL_CENTER} zoom={12} scrollWheelZoom className="h-full">
+      <MapContainer
+        // @ts-expect-error: center prop is missing in type definition but required by Leaflet
+        center={INITIAL_CENTER}
+        zoom={12}
+        scrollWheelZoom={true}
+        className="h-full"
+      >
         <TileLayer
+          // @ts-expect-error: attribution prop is missing in type definition but required by Leaflet
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />

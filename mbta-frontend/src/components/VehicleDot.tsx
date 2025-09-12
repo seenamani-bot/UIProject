@@ -15,10 +15,21 @@ export function VehicleDot({ v }: { v: NormalizedVehicle }) {
     </div>
   );
   return (
-    <CircleMarker center={[v.latitude, v.longitude]} radius={radius} pathOptions={{ color, fillColor: color, fillOpacity: 0.9 }}>
-      <Tooltip direction="top" offset={[0, -radius]} opacity={1} permanent={false}>
+    <CircleMarker
+      center={[v.latitude, v.longitude]}
+      pathOptions={{ color, fillColor: color, fillOpacity: 0.9 }}
+      // @ts-expect-error: radius is supported by react-leaflet CircleMarker but not in type defs
+      radius={radius}
+    >
+      <Tooltip
+        // @ts-expect-error: offset is supported by react-leaflet Tooltip but not in type defs
+        offset={[0, -radius]}
+        opacity={1}
+        permanent={false}
+      >
         {tooltip}
       </Tooltip>
     </CircleMarker>
   );
+  
 }

@@ -23,6 +23,9 @@ export type NormalizedAlert = {
   effect: string | null;
   updatedAt: string | null;
   activePeriod: { start: string | null; end: string | null }[];
+  routeIds: string[];
+  tripIds: string[];
+  stopIds: string[];
 };
 
 export type HeadwaySummary = {

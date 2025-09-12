@@ -80,10 +80,32 @@ export function normalizeVehicles(data: any): NormalizedVehicle[] {
   });
 }
 
+function isNowWithinActivePeriod(periods: any[]): boolean {
+  if (!Array.isArray(periods)) return false;
+  const now = Date.now();
+  for (const p of periods) {
+    const startMs = p?.start ? Date.parse(p.start) : Number.NEGATIVE_INFINITY;
+    const endMs = p?.end ? Date.parse(p.end) : Number.POSITIVE_INFINITY;
+    if (Number.isFinite(startMs) && now < startMs) continue;
+    if (Number.isFinite(endMs) && now > endMs) continue;
+    return true;
+  }
+  return false;
+}
+
 export function normalizeAlerts(data: any): NormalizedAlert[] {
   if (!data || !Array.isArray(data.data)) return [];
-  return data.data.map((d: any) => {
+  const activeOnly = (data.data as any[]).filter((d) =>
+    isNowWithinActivePeriod((d?.attributes?.active_period as any[]) || [])
+  );
+  return activeOnly.map((d: any) => {
     const a = d.attributes || {};
+    const r = d.relationships || {};
+    const pickIds = (rel: any): string[] => {
+      const arr = rel?.data;
+      if (Array.isArray(arr)) return arr.map((x: any) => String(x?.id)).filter(Boolean);
+      return [];
+    };
     return {
       id: String(d.id),
       header: a.header ?? a.short_header ?? null,
@@ -96,6 +118,9 @@ export function normalizeAlerts(data: any): NormalizedAlert[] {
             end: p?.end ?? null,
           }))
         : [],
+      routeIds: pickIds(r.routes),
+      tripIds: pickIds(r.trips),
+      stopIds: pickIds(r.stops),
     };
   });
 }
