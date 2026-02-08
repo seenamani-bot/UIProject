@@ -1,1 +1,1 @@
-__t is a dashboard simulator project
+It is a dashboard simulator project
